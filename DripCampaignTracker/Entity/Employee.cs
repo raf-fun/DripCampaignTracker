@@ -9,4 +9,7 @@ public class Employee
     public EmployeeRole Role { get; set; }
     public string? Phone { get; set; }
     public DateTime CreatedDate { get; set; }
+
+    public ICollection<Campaign> CampaignsAsMarketer { get; set; } = [];
+    public ICollection<Campaign> CampaignsAsManager { get; set; } = [];
 }

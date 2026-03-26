@@ -1,4 +1,5 @@
 using DripCampaignTracker.Enums;
+using System.Collections.Generic;
 
 namespace DripCampaignTracker.Entity;
 
@@ -11,4 +12,8 @@ public class Conversation
     public int FollowUpCount { get; set; }
     public DateTime LastContactedDate { get; set; }
     public DateTime CreatedDate { get; set; }
+
+    public Campaign? Campaign { get; set; }
+    public Lead? Lead { get; set; }
+    public ICollection<Message> Messages { get; set; } = [];
 }

@@ -13,4 +13,9 @@ public class Campaign
     public int MarketerId { get; set; }
     public int ManagerId { get; set; }
     public DateTime CreatedDate { get; set; }
+
+    public Employee? Marketer { get; set; }
+    public Employee? Manager { get; set; }
+    public ICollection<CampaignLead> CampaignLeads { get; set; } = [];
+    public ICollection<Conversation> Conversations { get; set; } = [];
 }
