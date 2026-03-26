@@ -8,7 +8,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+    });
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
@@ -19,7 +23,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("FrontEnd", policy =>
     {
-        policy.WithOrigins("http://localhost:3000") //Change to what front end port it will be
+        policy.WithOrigins("http://localhost:5173") //Change to what front end port it will be
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
@@ -30,7 +34,7 @@ builder.Services.AddAutoMapper(config => { }, typeof(MappingProfile));
 
 builder.Services.AddSingleton<IAIService, AIService>();
 builder.Services.AddScoped<MessageService>();
-builder.Services.AddSingleton<AIService>();
+builder.Services.AddSingleton<NotificationService>();
 
 var app = builder.Build();
 
@@ -48,11 +52,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
-app.UseCors("Frontend");
+app.UseCors("FrontEnd");
 app.MapControllers();
 
 app.Run();
