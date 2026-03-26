@@ -15,5 +15,5 @@ public class Conversation
 
     public Campaign? Campaign { get; set; }
     public Lead? Lead { get; set; }
-    public ICollection<Message> Messages { get; set; } = [];
+    public List<Message> Messages { get; set; } = [];
 }

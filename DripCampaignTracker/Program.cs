@@ -1,5 +1,8 @@
+using DripCampaignTracker;
 using DripCampaignTracker.Data;
+using DripCampaignTracker.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,7 +24,14 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod();
     });
 });
+
 builder.Services.AddSwaggerGen();
+builder.Services.AddAutoMapper(config => { }, typeof(MappingProfile));
+
+builder.Services.AddSingleton<AIService>();
+builder.Services.AddScoped<MessageService>();
+builder.Services.AddSingleton<AIService>();
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())

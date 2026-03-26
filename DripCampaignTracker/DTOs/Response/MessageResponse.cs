@@ -1,15 +1,12 @@
 using DripCampaignTracker.Enums;
 
-namespace DripCampaignTracker.Entity;
+namespace DripCampaignTracker.DTOs.Response;
 
-public class Message
+public class MessageResponse
 {
     public int Id { get; set; }
-    public int ConversationId { get; set; }
     public string Content { get; set; } = string.Empty;
     public SenderType SenderType { get; set; }
     public Classification Classification { get; set; }
     public DateTime SentDate { get; set; }
-
-    public Conversation? Conversation { get; set; }
 }
