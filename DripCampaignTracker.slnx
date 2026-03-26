@@ -1,3 +1,4 @@
 <Solution>
   <Project Path="DripCampaignTracker/DripsCampaignTracker.csproj" />
+  <Project Path="DripsCampaignTracker.Tests/DripsCampaignTracker.Tests.csproj" Id="bafe6014-3ba5-48d4-8f82-bce56dd6e632" />
 </Solution>
