@@ -3,7 +3,7 @@ using Microsoft.SemanticKernel;
 
 namespace DripsCampaignTracker.Services
 {
-    public class AIService
+    public class AIService : IAIService
     {
         private readonly Kernel kernel;
         private readonly ILogger<AIService> logger;

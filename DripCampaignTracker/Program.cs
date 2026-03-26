@@ -28,7 +28,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(config => { }, typeof(MappingProfile));
 
-builder.Services.AddSingleton<AIService>();
+builder.Services.AddSingleton<IAIService, AIService>();
 builder.Services.AddScoped<MessageService>();
 builder.Services.AddSingleton<AIService>();
 

@@ -7,7 +7,7 @@ namespace DripsCampaignTracker.Services
 {
     public class MessageService(
         AppDbContext context,
-        AIService aiService,
+        IAIService aiService,
         NotificationService notificationService,
         ILogger<MessageService> logger)
     {
