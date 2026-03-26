@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { getMessages, sendMessage } from '../services/api'
 
 export default function ConversationView() {
@@ -10,6 +10,9 @@ export default function ConversationView() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const navigate = useNavigate()
+
+    const [searchParams] = useSearchParams()
+    const leadName = searchParams.get('leadName') || `Conversation #${id}`
 
   const fetchMessages = () => {
     getMessages(id)
@@ -47,7 +50,7 @@ export default function ConversationView() {
     <div style={{ padding: '2rem' }}>
       <button onClick={() => navigate(-1)}>← Back</button>
 
-      <h1 style={{ marginTop: '1rem' }}>Conversation #{id}</h1>
+      <h1 style={{ marginTop: '1rem' }}>{leadName}</h1>
 
       <div style={{
         border: '1px solid #ccc',

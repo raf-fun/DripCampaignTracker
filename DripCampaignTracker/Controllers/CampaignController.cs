@@ -32,6 +32,7 @@ public class CampaignController (AppDbContext dbContext, IMapper mapper) : Contr
     {
         var campaign = await dbContext.Campaigns
             .Include(c => c.Conversations)
+            .ThenInclude(conv => conv.Lead)
             .FirstOrDefaultAsync(c => c.Id == id);
 
         if (campaign == null)
@@ -45,6 +46,9 @@ public class CampaignController (AppDbContext dbContext, IMapper mapper) : Contr
     [HttpPost]
     public async Task<IActionResult> CreateCampaign([FromBody] CreateCampaignRequest request)
     {
+        if (request.LeadIds.Count < 10)
+            return BadRequest("A campaign must have at least 10 leads.");
+
         var campaign = new Campaign
         {
             Name = request.Name,
@@ -60,6 +64,26 @@ public class CampaignController (AppDbContext dbContext, IMapper mapper) : Contr
         dbContext.Campaigns.Add(campaign);
         await dbContext.SaveChangesAsync();
 
+        foreach (var leadId in request.LeadIds)
+        {
+            dbContext.CampaignLeads.Add(new CampaignLead
+            {
+                CampaignId = campaign.Id,
+                LeadId = leadId
+            });
+
+            dbContext.Conversations.Add(new Conversation
+            {
+                CampaignId = campaign.Id,
+                LeadId = leadId,
+                Status = ConversationStatus.Active,
+                FollowUpCount = 0,
+                LastContactedDate = DateTime.UtcNow,
+                CreatedDate = DateTime.UtcNow
+            });
+        }
+
+        await dbContext.SaveChangesAsync();
         return Ok();
     }
 }

@@ -25,8 +25,8 @@ namespace DripsCampaignTracker
                     config => config.MapFrom(src => src.Conversations));
 
             CreateMap<Conversation, ConversationSummaryResponse>()
-                .ForMember(dest => dest.Status, config => config.MapFrom(src => src.Status.ToString()));
-
+                .ForMember(dest => dest.Status, config => config.MapFrom(src => src.Status.ToString()))
+                .ForMember(dest => dest.LeadName, opt => opt.MapFrom(src => src.Lead != null ? src.Lead.Name : "Unknown"));
             CreateMap<Message, MessageResponse>();
         }
     }

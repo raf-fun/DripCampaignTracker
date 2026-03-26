@@ -45,7 +45,7 @@ export default function CampaignDetail() {
       {campaign.conversations.map(conv => (
         <div
           key={conv.id}
-          onClick={() => navigate(`/conversations/${conv.id}`)}
+          onClick={() => navigate(`/conversations/${conv.id}?leadName=${encodeURIComponent(conv.leadName)}`)}
           style={{
             border: '1px solid #ccc',
             borderRadius: '8px',
@@ -55,7 +55,7 @@ export default function CampaignDetail() {
           }}
         >
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span>Lead #{conv.leadId}</span>
+            <span>{conv.leadName}</span>
             <span>{conv.status}</span>
           </div>
           <div style={{ color: '#555', marginTop: '0.25rem' }}>

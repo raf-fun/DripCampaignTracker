@@ -1,11 +1,13 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { createCampaign } from '../services/api'
+import { createCampaign, getLeads } from '../services/api'
 
 export default function CreateCampaign() {
   const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const [leads, setLeads] = useState([])
+  const [selectedLeads, setSelectedLeads] = useState([])
   const [form, setForm] = useState({
     name: '',
     goalTarget: '',
@@ -15,12 +17,24 @@ export default function CreateCampaign() {
     managerId: 2
   })
 
+  useEffect(() => {
+    getLeads().then(res => setLeads(res.data))
+  }, [])
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target
     setForm(prev => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }))
+  }
+
+  const toggleLead = (leadId) => {
+    setSelectedLeads(prev =>
+      prev.includes(leadId)
+        ? prev.filter(id => id !== leadId)
+        : [...prev, leadId]
+    )
   }
 
   const handleSubmit = async () => {
@@ -39,6 +53,11 @@ export default function CreateCampaign() {
       return
     }
 
+    if (selectedLeads.length < 10) {
+      setError('You must select at least 10 leads')
+      return
+    }
+
     setLoading(true)
     setError(null)
 
@@ -49,7 +68,8 @@ export default function CreateCampaign() {
         cooldownDays: parseInt(form.cooldownDays),
         autoClose: form.autoClose,
         marketerId: form.marketerId,
-        managerId: form.managerId
+        managerId: form.managerId,
+        leadIds: selectedLeads
       })
       navigate('/')
     } catch {
@@ -60,7 +80,7 @@ export default function CreateCampaign() {
   }
 
   return (
-    <div style={{ padding: '2rem', maxWidth: '500px', margin: '0 auto' }}>
+    <div style={{ padding: '2rem', maxWidth: '600px', margin: '0 auto' }}>
       <button onClick={() => navigate('/')}>← Back</button>
 
       <h1 style={{ marginTop: '1rem', marginBottom: '1.5rem' }}>New Campaign</h1>
@@ -111,6 +131,35 @@ export default function CreateCampaign() {
             onChange={handleChange}
           />
           <label>Auto Close when goal is reached</label>
+        </div>
+
+        <div>
+          <label>Select Leads ({selectedLeads.length} selected — min 10)</label>
+          <div style={{
+            border: '1px solid #ccc',
+            borderRadius: '8px',
+            marginTop: '0.5rem',
+            maxHeight: '250px',
+            overflowY: 'auto'
+          }}>
+            {leads.map(lead => (
+              <div
+                key={lead.id}
+                onClick={() => toggleLead(lead.id)}
+                style={{
+                  padding: '0.75rem 1rem',
+                  cursor: 'pointer',
+                  borderBottom: '1px solid #333',
+                  background: selectedLeads.includes(lead.id) ? '#1a3a1a' : 'transparent',
+                  display: 'flex',
+                  justifyContent: 'space-between'
+                }}
+              >
+                <span>{lead.name}</span>
+                {selectedLeads.includes(lead.id) && <span>✓</span>}
+              </div>
+            ))}
+          </div>
         </div>
 
         <button

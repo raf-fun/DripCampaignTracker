@@ -8,4 +8,5 @@ public class CreateCampaignRequest
     public bool AutoClose { get; set; }
     public int MarketerId { get; set; }
     public int ManagerId { get; set; }
+    public List<int> LeadIds { get; set; } = new List<int>();
 }
