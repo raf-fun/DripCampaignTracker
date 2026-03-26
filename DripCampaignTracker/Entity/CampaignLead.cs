@@ -1,4 +1,4 @@
-namespace DripCampaignTracker.Entity;
+namespace DripsCampaignTracker.Entity;
 
 public class CampaignLead
 {

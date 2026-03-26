@@ -1,6 +1,6 @@
-using DripCampaignTracker;
-using DripCampaignTracker.Data;
-using DripCampaignTracker.Services;
+using DripsCampaignTracker;
+using DripsCampaignTracker.Data;
+using DripsCampaignTracker.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 

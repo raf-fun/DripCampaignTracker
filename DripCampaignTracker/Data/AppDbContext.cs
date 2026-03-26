@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
-using DripCampaignTracker.Entity;
-using DripCampaignTracker.Enums;
+using DripsCampaignTracker.Entity;
+using DripsCampaignTracker.Enums;
 
-namespace DripCampaignTracker.Data;
+namespace DripsCampaignTracker.Data;
 
 public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {

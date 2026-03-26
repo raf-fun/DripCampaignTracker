@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using DripCampaignTracker.DTOs.Response;
-using DripCampaignTracker.Entity;
-using DripCampaignTracker.Enums;
+using DripsCampaignTracker.DTOs.Response;
+using DripsCampaignTracker.Entity;
+using DripsCampaignTracker.Enums;
 
-namespace DripCampaignTracker
+namespace DripsCampaignTracker
 {
     public class MappingProfile : Profile
     {

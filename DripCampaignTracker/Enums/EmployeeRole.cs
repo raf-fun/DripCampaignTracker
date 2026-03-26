@@ -1,4 +1,4 @@
-namespace DripCampaignTracker.Enums;
+namespace DripsCampaignTracker.Enums;
 
 public enum EmployeeRole
 {

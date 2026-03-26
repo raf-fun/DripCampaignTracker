@@ -1,4 +1,4 @@
-namespace DripCampaignTracker.DTOs;
+namespace DripsCampaignTracker.DTOs;
 
 public class CreateCampaignRequest
 {

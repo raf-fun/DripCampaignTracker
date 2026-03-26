@@ -1,7 +1,7 @@
-﻿using DripCampaignTracker.Entity;
-using DripCampaignTracker.Enums;
+﻿using DripsCampaignTracker.Entity;
+using DripsCampaignTracker.Enums;
 
-namespace DripCampaignTracker.Data
+namespace DripsCampaignTracker.Data
 {
     /*
      * SEED DATA LEGEND

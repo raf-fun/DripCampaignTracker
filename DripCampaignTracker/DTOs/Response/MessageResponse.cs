@@ -1,6 +1,6 @@
-using DripCampaignTracker.Enums;
+using DripsCampaignTracker.Enums;
 
-namespace DripCampaignTracker.DTOs.Response;
+namespace DripsCampaignTracker.DTOs.Response;
 
 public class MessageResponse
 {

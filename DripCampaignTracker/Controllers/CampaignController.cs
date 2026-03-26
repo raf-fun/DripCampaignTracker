@@ -1,16 +1,16 @@
 using AutoMapper;
-using DripCampaignTracker.Data;
-using DripCampaignTracker.DTOs;
-using DripCampaignTracker.DTOs.Response;
-using DripCampaignTracker.Entity;
-using DripCampaignTracker.Enums;
+using DripsCampaignTracker.Data;
+using DripsCampaignTracker.DTOs;
+using DripsCampaignTracker.DTOs.Response;
+using DripsCampaignTracker.Entity;
+using DripsCampaignTracker.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
 using System.Net.NetworkInformation;
 using System.Xml.Linq;
 
-namespace DripCampaignTracker.Controllers;
+namespace DripsCampaignTracker.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]

@@ -1,7 +1,7 @@
-using DripCampaignTracker.Enums;
+using DripsCampaignTracker.Enums;
 using System.Collections.Generic;
 
-namespace DripCampaignTracker.Entity;
+namespace DripsCampaignTracker.Entity;
 
 public class Conversation
 {

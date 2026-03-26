@@ -1,6 +1,6 @@
-﻿using DripCampaignTracker.Entity;
+﻿using DripsCampaignTracker.Entity;
 
-namespace DripCampaignTracker.Services
+namespace DripsCampaignTracker.Services
 {
     public class NotificationService(ILogger<NotificationService> logger)
     {

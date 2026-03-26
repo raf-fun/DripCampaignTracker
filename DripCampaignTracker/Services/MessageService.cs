@@ -1,9 +1,9 @@
-﻿using DripCampaignTracker.Data;
-using DripCampaignTracker.Entity;
-using DripCampaignTracker.Enums;
+﻿using DripsCampaignTracker.Data;
+using DripsCampaignTracker.Entity;
+using DripsCampaignTracker.Enums;
 using Microsoft.EntityFrameworkCore;
 
-namespace DripCampaignTracker.Services
+namespace DripsCampaignTracker.Services
 {
     public class MessageService(
         AppDbContext context,

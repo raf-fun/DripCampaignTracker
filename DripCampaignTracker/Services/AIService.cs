@@ -1,7 +1,7 @@
-﻿using DripCampaignTracker.Enums;
+﻿using DripsCampaignTracker.Enums;
 using Microsoft.SemanticKernel;
 
-namespace DripCampaignTracker.Services
+namespace DripsCampaignTracker.Services
 {
     public class AIService
     {

@@ -1,6 +1,6 @@
-using DripCampaignTracker.Enums;
+using DripsCampaignTracker.Enums;
 
-namespace DripCampaignTracker.Entity;
+namespace DripsCampaignTracker.Entity;
 
 public class Employee
 {

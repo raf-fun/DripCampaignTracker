@@ -1,4 +1,4 @@
-﻿namespace DripCampaignTracker.DTOs.Response
+﻿namespace DripsCampaignTracker.DTOs.Response
 {
     public class CampaignSummaryResponse
     {
