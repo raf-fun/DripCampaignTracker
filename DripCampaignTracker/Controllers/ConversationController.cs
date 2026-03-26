@@ -31,6 +31,29 @@ public class ConversationController(AppDbContext dbContext, IMapper mapper, Mess
         return Ok(mapper.Map<List<MessageResponse>>(messages));
     }
 
+    [HttpGet("{id}")]
+    public async Task<ActionResult<ConversationDetailResponse>> GetConversation(int id)
+    {
+        var conversation = await dbContext.Conversations
+            .Include(c => c.Lead)
+            .Include(c => c.Campaign)
+            .FirstOrDefaultAsync(c => c.Id == id);
+
+        if (conversation == null || conversation.Campaign == null)
+            return NotFound();
+
+        return Ok(new ConversationDetailResponse
+        {
+            Id = conversation.Id,
+            LeadId = conversation.LeadId,
+            LeadName = conversation.Lead?.Name ?? "Unknown",
+            Status = conversation.Status.ToString(),
+            FollowUpCount = conversation.FollowUpCount,
+            LastContactedDate = conversation.LastContactedDate,
+            CooldownDays = conversation.Campaign.CooldownDays
+        });
+    }
+
     [HttpPost("{id}/messages")]
     public async Task<IActionResult> SendMessage(int id, [FromBody] CreateMessageRequest request)
     {
