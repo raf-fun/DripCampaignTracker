@@ -12,7 +12,14 @@ using System.Text;
 
 namespace DripsCampaignTracker.Tests
 {
-
+    /// <summary>
+    /// Contains unit tests for the MessageService class, verifying message processing, follow-up logic, and
+    /// conversation state transitions.
+    /// </summary>
+    /// <remarks>These tests use in-memory database contexts and mock dependencies to validate the behavior of
+    /// MessageService under various scenarios, including handling of incoming replies and follow-up message sending.
+    /// The tests ensure that conversation statuses and message records are updated as expected based on different
+    /// inputs and business rules.</remarks>
     public class MessageServiceTests
     {
         private AppDbContext CreateInMemoryContext()
@@ -87,6 +94,76 @@ namespace DripsCampaignTracker.Tests
 
             var conversation = await context.Conversations.FindAsync(1);
             Assert.Equal(ConversationStatus.Completed, conversation!.Status);
+        }
+
+        [Fact]
+        public async Task ProcessIncomingReply_OptedOutConversation_IgnoresReply()
+        {
+            var context = CreateInMemoryContext();
+            await SeedConversationAsync(context, ConversationStatus.OptedOut);
+            var aiService = CreateMockAIService(Classification.Yes, "We are so excited to have you!");
+            var service = CreateService(context, aiService);
+
+            await service.ProcessIncomingReplyAsync(1, "Actually I changed my mind, yes!");
+
+            var messages = await context.Messages.ToListAsync();
+            Assert.Empty(messages);
+        }
+
+        [Fact]
+        public async Task SendFollowUp_CooldownNotPassed_DoesNotSendMessage()
+        {
+            var context = CreateInMemoryContext();
+            await SeedConversationAsync(context, ConversationStatus.NeedsFollowUp, followUpCount: 0, daysAgoContacted: 1);
+            var aiService = CreateMockAIService(Classification.Ambiguous, "We will follow up soon.");
+            var service = CreateService(context, aiService);
+
+            await service.SendFollowUpAsync(1, "Just checking in!");
+
+            var messages = await context.Messages.ToListAsync();
+            Assert.Empty(messages);
+        }
+
+        [Fact]
+        public async Task SendFollowUp_MaxFollowUpsReached_DoesNotSendMessage()
+        {
+            var context = CreateInMemoryContext();
+            await SeedConversationAsync(context, ConversationStatus.NeedsFollowUp, followUpCount: 2, daysAgoContacted: 5);
+            var aiService = CreateMockAIService(Classification.Ambiguous, "We will follow up soon.");
+            var service = CreateService(context, aiService);
+
+            await service.SendFollowUpAsync(1, "Just checking in!");
+
+            var messages = await context.Messages.ToListAsync();
+            Assert.Empty(messages);
+        }
+
+        [Fact]
+        public async Task ProcessIncomingReply_NoReply_SetsConversationToOptedOut()
+        {
+            var context = CreateInMemoryContext();
+            await SeedConversationAsync(context, ConversationStatus.Active);
+            var aiService = CreateMockAIService(Classification.No, "Thank you for your time.");
+            var service = CreateService(context, aiService);
+
+            await service.ProcessIncomingReplyAsync(1, "No thanks not interested.");
+
+            var conversation = await context.Conversations.FindAsync(1);
+            Assert.Equal(ConversationStatus.OptedOut, conversation!.Status);
+        }
+
+        [Fact]
+        public async Task SendFollowUp_ValidConditions_IncrementsFollowUpCount()
+        {
+            var context = CreateInMemoryContext();
+            await SeedConversationAsync(context, ConversationStatus.NeedsFollowUp, followUpCount: 0, daysAgoContacted: 5);
+            var aiService = CreateMockAIService(Classification.Ambiguous, "We will follow up soon.");
+            var service = CreateService(context, aiService);
+
+            await service.SendFollowUpAsync(1, "Just checking in!");
+
+            var conversation = await context.Conversations.FindAsync(1);
+            Assert.Equal(1, conversation!.FollowUpCount);
         }
     }
 }
