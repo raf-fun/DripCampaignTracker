@@ -38,7 +38,7 @@ DripCampaignTracker/
 
 **Campaign Management**
 - Marketer creates a campaign with a target goal (min 10 leads), cooldown period (min 2 days), max 2 follow-ups per lead, and optional auto-close when goal is reached
-- Leads are selected from existing records in the system at campaign creation — not created during launch
+- Leads are selected from existing records in the system at campaign creation
 - Each campaign is owned by exactly one marketer
 
 **Reply Ingestion & Classification**
@@ -54,7 +54,7 @@ DripCampaignTracker/
 **Follow-Up Rules**
 - Marketer can manually trigger follow-ups for leads with no response or ambiguous replies
 - Maximum 2 follow-ups per lead enforced by the system
-- Minimum 2-day cooldown between messages enforced by the system
+- Minimum 2 day cooldown between messages enforced by the system
 - Opted-out leads cannot be contacted again within the campaign
 
 **Progress Tracking**
@@ -80,6 +80,7 @@ DripCampaignTracker/
 - A lead can be part of multiple campaigns simultaneously
 - One marketer per campaign
 - All messaging is SMS-based
+- SMS in this regard is a web chat
 - Ambiguous replies are treated as no response for goal-tracking purposes — they do not count toward the Yes goal
 - The system enforces a minimum 2-day cooldown between messages and a maximum of 2 follow-ups per lead
 - Leads who reply No are permanently opted out from that campaign
@@ -92,10 +93,10 @@ DripCampaignTracker/
 EF Core in-memory provider with seeded data. Resets on restart giving a clean, predictable demo state every time. In production this would be a persistent relational database (SQL Server or Azure SQL).
 
 **Semantic Kernel for AI** 
-used Microsoft Semantic Kernel rather than raw HTTP calls to the AI provider. This keeps the AI provider swappable behind a common interface. The configuration is fully generic (BaseUrl, ApiKey, Model) so switching from Gemini to Azure OpenAI is a small change.
+Used Microsoft Semantic Kernel rather than raw HTTP calls to the AI provider. This keeps the AI provider swappable behind a common interface. The configuration is fully generic (BaseUrl, ApiKey, Model) so switching from Gemini to Azure OpenAI or any other tool is a small change.
 
 **AI Fallback** 
-if the AI service is unavailable or errors, the system falls back to predefined response templates rather than failing. Classification defaults to Ambiguous on failure, keeping the lead in play rather than incorrectly opting them out.
+If the AI service is unavailable or errors, the system falls back to predefined response templates rather than failing. Classification defaults to Ambiguous on failure, keeping the lead in play rather than incorrectly opting them out.
 
 **AutoMapper** 
 used for entity-to-DTO mapping to keep controllers thin and mapping logic centralized.
@@ -103,17 +104,13 @@ used for entity-to-DTO mapping to keep controllers thin and mapping logic centra
 **Interface over Concrete** 
 AIService is registered behind IAIService, making it mockable in tests without needing to hit a real API.
 
-**Notification Deduplication** 
-milestone notifications are tracked in a HashSet on the NotificationService singleton to prevent duplicate SMS sends. In production this would be tracked in the database to survive restarts.
-
-
 ---
 
 ## AI Usage
 
 **Tool:** Google Gemini (`gemini-3-flash-preview`) via Microsoft Semantic Kernel
 
-**Why Semantic Kernel:** It abstracts the AI provider behind a common interface, making it straightforward to swap to Azure OpenAI in production with a small change.
+**Why Semantic Kernel:** It abstracts the AI provider behind a common interface, making it straightforward to swap to Azure OpenAI or any tool with a small change.
 
 **Where AI is used:**
 - Classifying inbound lead replies as Yes, No, or Ambiguous
@@ -121,7 +118,7 @@ milestone notifications are tracked in a HashSet on the NotificationService sing
 
 **Risks and tradeoffs:**
 - AI classification can be inconsistent on ambiguous or short replies — mitigated by defaulting to Ambiguous on low-confidence results
-- API latency adds response time to the message flow — mitigated with loading state in the UI and fallback messages if the API fails
+- API to AI latency adds response time to the message flow — mitigated with loading state in the UI and fallback messages if the API fails
 - Cost — each inbound reply triggers two AI calls (classify + generate). At scale this would need batching or caching strategies or better call management.
 
 **AI-assisted development:** Claude chat and GitHub Copilot was used for boilerplate generation and code suggestions throughout the project.
@@ -141,7 +138,7 @@ cd DripCampaignTracker
 dotnet user-secrets set "AI:ApiKey" "your-gemini-api-key"
 dotnet user-secrets set "AI:BaseUrl" "https://generativelanguage.googleapis.com"
 dotnet user-secrets set "AI:Model" "gemini-3-flash-preview"
-dotnet run
+dotnet run #or run in Visual Studio(http)
 ```
 
 API runs on `http://localhost:5066`
@@ -161,7 +158,7 @@ Frontend runs on `http://localhost:5173`
 
 ```bash
 cd DripsCampaignTracker.Tests
-dotnet test
+dotnet test #or run in Visual Studio
 ```
 
 ---
@@ -186,11 +183,12 @@ The application seeds two campaigns on startup for demo purposes.
 
 ## What I Would Improve With More Time
 
-- **SignalR** — add real-time push so conversation threads update live without the marketer needing to refresh. The backend service layer is already structured to support this — it would be a hub broadcast after each message is processed
-- **Authentication and authorization** — role-based access so marketers and managers see appropriate views. Currently simulated via a UI dropdown
-- **Persistent database** — replace in-memory with SQL Server or Azure SQL with EF Core migrations
+- **SignalR** — add real-time push so conversation threads update live without the marketer needing to refresh. The backend service layer is already structured to support this. I would add a hub broadcast after each message is processed
+- **Authentication and authorization** — role-based access so marketers and leads see appropriate views. Currently simulated via a UI dropdown
+- **Persistent database** — replace in-memory with SQL Server or Azure SQL with EF Core migrations or any other option
 - **Background job for follow-ups** — automatically send follow-ups at the cooldown interval rather than relying on manual marketer action
 - **Manager Messages** — Finish sending milestones. Is already set up but not finished.
-- **Notification persistence** — track sent milestone notifications in the database instead of an in-memory HashSet so they survive restarts
-- **Richer AI classification** — add confidence scoring and a human review queue for low-confidence replies
+- **Notification persistence** — Track sent milestone notifications in the database instead of an in-memory HashSet so they survive restarts
+- **Richer AI classification** — Add confidence scoring and a human review queue for low-confidence replies
 - **Lead management** — UI for creating and managing leads rather than relying on seeded data
+- **Better Campaign management** — Allow better options when creating and options to edit.
